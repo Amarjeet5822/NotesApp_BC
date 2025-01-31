@@ -52,8 +52,7 @@ userRouter.post("/login", loginMiddleware, async (req, res) => {
 });
 // Get all the user's
 userRouter.get("/",auth, async (req, res) => {
-  console.log("user route line 55 ")
-  const users = await UserModel.find().populate("notes");
+  const users = await UserModel.find()
   if (!users) {
     return res.status(400).json({ message: "NO USER FOUND!" });
   }
