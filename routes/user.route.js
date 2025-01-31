@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const { UserModel } = require("../models/user.models");
 const bcrypt = require("bcrypt");
@@ -5,17 +6,17 @@ const jwt = require("jsonwebtoken");
 const { registerMiddleware } = require("../middlewares/registrationLogic");
 const { loginMiddleware } = require("../middlewares/loginMiddleware");
 const { auth } = require("../middlewares/authMw");
-require("dotenv").config();
 
 const userRouter = express.Router();
 
 // User Registration
 userRouter.post("/register", registerMiddleware, async (req, res) => {
   const { name, pass, email } = req.body;
+  
   try {
     bcrypt.hash(pass, Number(process.env.SALT_ROUNDS), async (err, hash) => {
       if (err) {
-        res.status(400).json({ err });
+        res.status(400).json({ msg: err.message }); // ! update  for more specific error
       } else {
         const newUser = new UserModel({ name, email, pass: hash });
         await newUser.save();
