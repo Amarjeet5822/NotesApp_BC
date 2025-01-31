@@ -9,6 +9,7 @@ noteRouter.post("/", auth,async (req,res)=>{
         await newNote.save();
         res.status(200).json({msg:"Note created Successfully!"});
     } catch(error) {
+        console.log(error.message)
         res.status(500).json({msg:"Internal server error", error});
     }
 })
