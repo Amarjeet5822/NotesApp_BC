@@ -4,20 +4,21 @@ const {NoteModel} = require("../models/note.models")
 const noteRouter = express.Router()
 
 noteRouter.post("/", auth,async (req,res)=>{
-    try {
-        const newNote = new NoteModel(req.body);
-        await newNote.save();
-        res.status(200).json({msg:"Note created Successfully!"});
-    } catch(error) {
-        console.log(error.message)
-        res.status(500).json({msg:"Internal server error", error});
-    }
+  try {
+    const newNote = new NoteModel(req.body);
+    await newNote.save();
+    res.status(200).json({msg:"Note created Successfully!"});
+  } catch(error) {
+    console.log(error.message)
+    res.status(500).json({msg:"Internal server error", error});
+  }
 })
 
 noteRouter.get("/",auth, async (req,res)=>{
     try {
-        const notes = await NoteModel.find({userId: req.body.userId});
-        res.status(200).json({notes})
+      const {userId } = req.user
+      const notes = await NoteModel.find({ userId});
+      res.status(200).json({notes})
     } catch(error) {
         res.status(500).json({msg:"Internal server error", error});
     }
