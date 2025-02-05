@@ -1,11 +1,14 @@
 const express = require("express")
 const {auth} = require("../middlewares/authMw")
 const {NoteModel} = require("../models/note.models")
+const { addPostMiddleware } = require("../middlewares/addPostMiddleware")
 const noteRouter = express.Router()
 
-noteRouter.post("/", auth,async (req,res)=>{
+noteRouter.post("/", auth, addPostMiddleware ,async (req,res)=>{
+  const {title, description} = req.body;
+  const { userId, user } = req.user;
   try {
-    const newNote = new NoteModel(req.body);
+    const newNote = new NoteModel({ title, description, userId, user});
     await newNote.save();
     res.status(200).json({msg:"Note created Successfully!"});
   } catch(error) {
