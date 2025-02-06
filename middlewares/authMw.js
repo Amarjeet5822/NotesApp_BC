@@ -9,7 +9,6 @@ const auth = async (req, res, next) => {
     }
     jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
       if (decoded) {
-        console.log("decoded line 12", decoded)
         req.user = decoded
         next();
       }else{

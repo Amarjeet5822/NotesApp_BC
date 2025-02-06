@@ -32,8 +32,6 @@ noteRouter.patch("/:noteId",auth, async (req,res)=>{
     const { noteId } = req.params;
     const { userId } = req.user;
     const { ...updateData } = req.body;
-    console.log("noteId:", noteId);
-    console.log("updateData: ", updateData);
     const userNote = await NoteModel.findById( noteId);
     if(!userNote){
       return res.status(404).json({message:"not found"})
