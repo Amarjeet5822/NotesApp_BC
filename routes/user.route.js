@@ -31,7 +31,6 @@ userRouter.post("/register", registerMiddleware, async (req, res) => {
 // user Login
 userRouter.post("/login", loginMiddleware, async (req, res) => {
   const { email, pass } = req.body;
-  // logic to trim pass and email
   try {
     const matchingUser = await UserModel.findOne({ email });
     if (matchingUser) {
@@ -66,7 +65,9 @@ userRouter.post("/logout", auth, async (req, res) => {
     if(!refreshToken) {
       return res.status(400).json({ msg: "No token provided"})
     }
-    await new TokenModel({ token: refreshToken, userId });
+    const newToken =  new TokenModel({ token: refreshToken, userId });
+    await newToken.save();
+
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: true,  // Set true in production
