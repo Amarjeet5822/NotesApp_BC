@@ -5,10 +5,10 @@ const { addPostMiddleware } = require("../middlewares/addPostMiddleware")
 const noteRouter = express.Router()
 
 noteRouter.post("/", auth, addPostMiddleware ,async (req,res)=>{
-  const {title, description} = req.body;
+  const {title, content} = req.body;
   const { userId, user } = req.user;
   try {
-    const newNote = new NoteModel({ title, description, userId, user});
+    const newNote = new NoteModel({ title, content, userId, user});
     await newNote.save();
     res.status(200).json({msg:"Note created Successfully!"});
   } catch(error) {
@@ -31,7 +31,6 @@ noteRouter.patch("/:noteId",auth, async (req,res)=>{
   try {
     const { noteId } = req.params;
     const { userId } = req.user;
-    const { ...updateData } = req.body;
     const userNote = await NoteModel.findById( noteId);
     if(!userNote){
       return res.status(404).json({message:"not found"})

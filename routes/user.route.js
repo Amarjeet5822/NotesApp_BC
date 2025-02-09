@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const { registerMiddleware } = require("../middlewares/registrationLogic");
 const { loginMiddleware } = require("../middlewares/loginMiddleware");
 const { auth } = require("../middlewares/authMw");
+const { TokenModel } = require("../models/token.models");
 
 const userRouter = express.Router();
 
@@ -36,11 +37,17 @@ userRouter.post("/login", loginMiddleware, async (req, res) => {
     if (matchingUser) {
       const isPasswordMatching = await bcrypt.compare(pass, matchingUser.pass);
       if (isPasswordMatching) {
-        const token = jwt.sign(
+        const refreshToken = jwt.sign(
           { userId: matchingUser._id, user: matchingUser.name },
-          process.env.SECRET_KEY
+          process.env.SECRET_KEY, { expiresIn: "7d"}
         );
-        res.status(200).json({ msg: "Login Successfull!", token });
+        res.cookie("refreshToken", refreshToken, {
+          httpOnly: true,
+          secure: true, // Set true in production
+          sameSite: "Strict",
+          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      });
+        res.status(200).json({ msg: "Login Successfull!",refreshToken });
       } else {
         res.status(400).json({ msg: "Invalid Password" });
       }
@@ -51,13 +58,23 @@ userRouter.post("/login", loginMiddleware, async (req, res) => {
     res.status(500).json({ error });
   }
 });
-// Get all the user's
-userRouter.get("/",auth, async (req, res) => {
-  const users = await UserModel.find()
-  if (!users) {
-    return res.status(400).json({ message: "NO USER FOUND!" });
-  }
-  res.send(users);
-});
 
+userRouter.post("/logout", auth, async (req, res) => {
+  try {
+    const { userId }  = req.user;
+    const refreshToken = req.cookies.refreshToken;
+    if(!refreshToken) {
+      return res.status(400).json({ msg: "No token provided"})
+    }
+    await new TokenModel({ token: refreshToken, userId });
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: true,  // Set true in production
+      sameSite: "Strict",
+    });
+    res.status(200).json({message: "logout Successful!"})
+  } catch (error) {
+    res.status(500).json({message: error.message});
+  }
+})
 module.exports = { userRouter };

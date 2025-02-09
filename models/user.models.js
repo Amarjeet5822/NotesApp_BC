@@ -10,11 +10,11 @@ const userSchema = new mongoose.Schema({
 })
 
 userSchema.virtual("notes", {
-    ref: "note",
+    ref: "notes",
     localField: "_id",
     foreignField: "userId"
 })
 
-const UserModel = mongoose.model("user", userSchema)
+const UserModel = mongoose.model("users", userSchema)
 
 module.exports = {UserModel}
