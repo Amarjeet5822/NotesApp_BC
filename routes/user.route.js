@@ -1,28 +1,28 @@
-require("dotenv").config();
 const express = require("express");
 const { UserModel } = require("../models/user.models");
+const { TokenModel } = require("../models/token.models");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { registerMiddleware } = require("../middlewares/registrationLogic");
 const { loginMiddleware } = require("../middlewares/loginMiddleware");
 const { auth } = require("../middlewares/authMw");
-const { TokenModel } = require("../models/token.models");
+require("dotenv").config();
 
 const userRouter = express.Router();
 
 // User Registration
 userRouter.post("/register", registerMiddleware, async (req, res) => {
   const { name, pass, email } = req.body;
-  
+ 
   try {
     bcrypt.hash(pass, Number(process.env.SALT_ROUNDS), async (err, hash) => {
       if (err) {
-        res.status(400).json({ msg: err.message }); // ! update  for more specific error
-      } else {
-        const newUser = new UserModel({ name, email, pass: hash });
-        await newUser.save();
-        res.status(200).json({ msg: "You have been successfully regitered!" });
-      }
+        return res.status(400).json({ msg: err.message }); // ! update  for more specific error
+      } 
+      const newUser = new UserModel({ name, email, pass: hash });
+      await newUser.save();
+      res.status(200).json({ msg: "You have been successfully regitered!" });
+      
     });
   } catch (error) {
     res.status(500).json({ error });
@@ -41,12 +41,12 @@ userRouter.post("/login", loginMiddleware, async (req, res) => {
           process.env.SECRET_KEY, { expiresIn: "7d"}
         );
         res.cookie("refreshToken", refreshToken, {
-          httpOnly: true,
-          secure: true, // Set true in production
-          sameSite: "Strict",
-          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      });
-        res.status(200).json({ msg: "Login Successfull!",refreshToken });
+          httpOnly: true,  // Prevents XSS attacks
+          secure: process.env.NODE_ENV === "production", // `false` in development, `true` in production
+          sameSite: "Lax", // `Strict` can block requests in some cases, `Lax` is better for authentication
+          maxAge: 90 * 60 * 60 * 1000, // Fifteen minutes
+        });
+        res.status(200).json({ msg: "Login Successfull!",refreshToken, matchingUser });
       } else {
         res.status(400).json({ msg: "Invalid Password" });
       }
@@ -62,6 +62,7 @@ userRouter.post("/logout", auth, async (req, res) => {
   try {
     const { userId }  = req.user;
     const refreshToken = req.cookies.refreshToken;
+    console.log("line 65 logout = ", refreshToken)
     if(!refreshToken) {
       return res.status(400).json({ msg: "No token provided"})
     }
@@ -70,8 +71,8 @@ userRouter.post("/logout", auth, async (req, res) => {
 
     res.clearCookie("refreshToken", {
       httpOnly: true,
-      secure: true,  // Set true in production
-      sameSite: "Strict",
+      secure: false,   // ✅ Change to false for localhost testing
+      sameSite: "Lax", // ✅ Change to "Lax" for cross-site requests
     });
     res.status(200).json({message: "logout Successful!"})
   } catch (error) {

@@ -7,7 +7,7 @@ const featuresRouter = express.Router();
 // Search Notes
 featuresRouter.get("/search", auth, async (req, res) => {
   try {
-    // http:localhost:8080/api/search?q=searchKeyword
+    // http:localhost:8080/api/search?q=searchKeyword project
     const searchQuery = req.query.q;
     if (!searchQuery) {
       return res.status(400).json({ msg: "Search query is required" });
@@ -25,7 +25,7 @@ featuresRouter.get("/search", auth, async (req, res) => {
 });
 
 // Filter Notes as per priority
-featuresRouter.get("/filter", async (req, res) => {
+featuresRouter.get("/filter", auth,  async (req, res) => {
   try {
     // http://localhost:8080/api/filter?priority=${priority}
     const { priority } = req.query;
@@ -41,7 +41,7 @@ featuresRouter.get("/filter", async (req, res) => {
 });
 
 // filter notes by Category
-featuresRouter.get("/filter-category", async (req, res) => {
+featuresRouter.get("/filter-category", auth, async (req, res) => {
   try {
     // http://localhost:8080/filter-category?category="category"
     const { category } = req.query; 
@@ -56,7 +56,7 @@ featuresRouter.get("/filter-category", async (req, res) => {
   }
 });
 
-featuresRouter.get("/sorted", async (req, res) => {
+featuresRouter.get("/sorted",auth, async (req, res) => {
   try {
     // GET http://localhost:8080/notes/sorted?sortBy=title&order=asc
     let { sortBy, order } = req.query;

@@ -11,7 +11,8 @@ const registerMiddleware = async (req, res, next) => {
       return res
         .status(406)
         .json({ message: "User already exit! Please login" });
-    } else {
+    } 
+    else {
       next();
     }
   } catch (error) {
