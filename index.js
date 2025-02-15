@@ -17,9 +17,9 @@ const cookieParserSecret = process.env.SECRET_KEY;
 app.use(cookieParser(cookieParserSecret));
 
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: [process.env.FE_URL],
   credentials: true, // 
-  methods: "GET,PATCH,POST,DELETE",
+  methods: ["GET" ,"PATCH","POST", "DELETE"],
   allowedHeaders:["Content-Type", "Authorization"],
 
 }));

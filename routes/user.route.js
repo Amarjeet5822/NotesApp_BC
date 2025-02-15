@@ -43,7 +43,7 @@ userRouter.post("/login", loginMiddleware, async (req, res) => {
         res.cookie("refreshToken", refreshToken, {
           httpOnly: true,  // Prevents XSS attacks
           secure: process.env.NODE_ENV === "production", // `false` in development, `true` in production
-          sameSite: "Lax", // `Strict` can block requests in some cases, `Lax` is better for authentication
+          sameSite:"none", // `Strict` can block requests in some cases, `Lax` is better for authentication
           maxAge: 90 * 60 * 60 * 1000, // Fifteen minutes
         });
         res.status(200).json({ msg: "Login Successfull!",refreshToken, matchingUser });
