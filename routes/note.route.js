@@ -31,6 +31,7 @@ noteRouter.get("/",auth, async (req,res)=>{
 
 noteRouter.get("/:noteId", auth, isNoteAuthenticated, async (req, res) => {
   try {
+    console.log("route notes to get single note")
     const { noteId} = req.params;
     const userNote = await NoteModel.findById( noteId);
     res.status(200).json(userNote);
@@ -41,7 +42,7 @@ noteRouter.get("/:noteId", auth, isNoteAuthenticated, async (req, res) => {
 
 noteRouter.patch("/:noteId",auth, isNoteAuthenticated, async (req,res)=>{
   try {
-    // http://localhost:8080/users/36234222525asdfdsklnsd521
+    // http://localhost:8080/notes/36234222525asdfdsklnsd521
     const { noteId } = req.params;
     const updatedNote = await NoteModel.findByIdAndUpdate( noteId, req.body, {new: true});
     res.status(201).json({ message:"Note updated successfully!", updatedNote });

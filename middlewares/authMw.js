@@ -5,12 +5,12 @@ require("dotenv").config();
 const auth = async (req, res, next) => {
   try {
     const token = req.cookies.refreshToken;
-    const isTokenInDb = await TokenModel.findOne(token);
-    if(isTokenInDb) {
-      return res.status(440).json({ msg: "Session is Expired! Login first" });
-    }
     if (!token) {
       return res.status(400).json({ msg: "Please login first!" });
+    }
+    const isTokenInDb = await TokenModel.findOne({token});
+    if(isTokenInDb) {
+      return res.status(440).json({ msg: "Session is Expired! Login first" });
     }
     jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
       if(err) {
