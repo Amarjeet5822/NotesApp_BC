@@ -3,6 +3,30 @@ const { auth } = require("../middlewares/authMw");
 const { NoteModel } = require("../models/note.models");
 
 const featuresRouter = express.Router();
+/**
+* @swagger
+* /features/search:
+*   get:
+*     summary: Search notes by title or content
+*     tags:
+*       - Notes Features
+*     security:
+*       - BearerAuth: []
+*     parameters:
+*       - name: q
+*         in: query
+*         required: true
+*         schema:
+*           type: string
+*         description: The search keyword for filtering notes.
+*     responses:
+*        200:
+*          description: List of notes matching the search criteria.
+*        400:
+*          description: Search query is required.
+*        500:
+*          description: Server error.
+*/
 
 // Search Notes
 featuresRouter.get("/search", auth, async (req, res) => {
@@ -24,7 +48,30 @@ featuresRouter.get("/search", auth, async (req, res) => {
     res.status(500).json({ msg: "Server error", error });
   }
 });
-
+/** 
+*  @swagger
+*  /features/filter:
+*    get:
+*      summary: Filter notes based on priority
+*      tags:
+*        - Notes Features
+*      security:
+*        - BearerAuth: []
+*      parameters:
+*        - name: priority
+*          in: query
+*          required: true
+*          schema:
+*            type: string
+*          description: The priority level to filter notes.
+*      responses:
+*        200:
+*          description: List of notes filtered by priority.
+*        400:
+*          description: Priority is required for filtering.
+*        500:
+*          description: Server error.
+*/
 // Filter Notes as per priority
 featuresRouter.get("/filter", auth,  async (req, res) => {
   try {
@@ -41,7 +88,30 @@ featuresRouter.get("/filter", auth,  async (req, res) => {
     res.status(500).json({ msg: "Server error", error });
   }
 });
-
+/** 
+* @swagger
+* /features/filter-category:
+*    get:
+*      summary: Filter notes by category
+*      tags:
+*        - Notes Features
+*      security:
+*        - BearerAuth: []
+*      parameters:
+*        - name: category
+*          in: query
+*          required: true
+*          schema:
+*            type: string
+*          description: The category name to filter notes.
+*      responses:
+*        200:
+*          description: List of notes filtered by category.
+*        400:
+*          description: Category is required for filtering.
+*        500:
+*          description: Server error.
+*/
 // filter notes by Category
 featuresRouter.get("/filter-category", auth, async (req, res) => {
   try {
@@ -59,6 +129,33 @@ featuresRouter.get("/filter-category", auth, async (req, res) => {
   }
 });
 
+/**
+* @swagger 
+*   /features/sorted:
+*     get:
+*       summary: Get sorted notes
+*       tags:
+*         - Notes Features
+*       security:
+*         - BearerAuth: []
+*       parameters:
+*         - name: sortBy
+*           in: query
+*           schema:
+*             type: string
+*           description: The field to sort by (e.g., title, createdAt).
+*         - name: order
+*           in: query
+*           schema:
+*             type: string
+*             enum: [asc, desc]
+*           description: Sort order (asc for ascending, desc for descending).
+*       responses:
+*         200:
+*           description: List of sorted notes.
+*         500:
+*           description: Server error.
+*/
 featuresRouter.get("/sorted",auth, async (req, res) => {
   try {
     // GET http://localhost:8080/notes/sorted?sortBy=title&order=asc

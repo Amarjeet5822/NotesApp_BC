@@ -6,7 +6,7 @@ const auth = async (req, res, next) => {
   try {
     const token = req.cookies.refreshToken;
     if (!token) {
-      return res.status(400).json({ msg: "Please login first!" });
+      return res.status(401).json({ msg: "Please login first!" });
     }
     const isTokenInDb = await TokenModel.findOne({token});
     if(isTokenInDb) {
@@ -14,7 +14,7 @@ const auth = async (req, res, next) => {
     }
     jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
       if(err) {
-        return res.status(400).json({ msg: "Please login first!", err });
+        return res.status(401).json({ msg: "Please login first!", err });
       }
       req.user = decoded // { userId: user_id, name: user.name} = payload
       next();

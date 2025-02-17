@@ -1,12 +1,11 @@
 const express = require("express");
 const { connectDB } = require("./dbConnection");
-const { noteRouter } = require("./routes/note.route");
-const { userRouter } = require("./routes/user.route");
-const { featuresRouter } = require("./routes/feature.route");
-const tokenRouter = require("./routes/token.route");
+const swaggerDocs = require("./swaggerConfig") // import swaggerDocs
 require("dotenv").config();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const router = require("./routes/index.route");
+
 const app = express();
 
 app.use(express.json()); // req.body parse json
@@ -24,11 +23,9 @@ app.use(cors({
 
 }));
 
+app.use(router);
 
-app.use("/users", userRouter);
-app.use("/notes", noteRouter);
-app.use("/api", featuresRouter);
-app.use("/token", tokenRouter);
+swaggerDocs(app); // Load Swagger for Documentation
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

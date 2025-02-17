@@ -13,10 +13,10 @@ const loginMiddleware = async (req, res, next) => {
   const {email, pass} = req.body;
   // logic to trim pass and email 
   if(!email || !pass){
-    return res.status(400).json({msg:"Required email and password"})
+    return res.status(400).json({message:"Invalid Credentail"})
   }
   if(!/\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(email)){
-    return res.status(400).json({msg:"Invalid email! Please enter correct valid email"})
+    return res.status(400).json({message:"Invalid email! Please enter correct valid email"})
   }
   const user =await UserModel.findOne({email});
   if(!user){
