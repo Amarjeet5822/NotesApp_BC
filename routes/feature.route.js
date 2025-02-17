@@ -24,6 +24,12 @@ const featuresRouter = express.Router();
 *          description: List of notes matching the search criteria.
 *        400:
 *          description: Search query is required.
+*        404:
+*          description: Notes not available!
+*        401:
+*          description: "Please login first!"
+*        440:
+*          description: Search query is required.
 *        500:
 *          description: Server error.
 */
@@ -33,7 +39,9 @@ featuresRouter.get("/search", auth, async (req, res) => {
   try {
     // http:localhost:8080/api/search?q=searchKeyword project
     const searchQuery = req.query.q;
+    console.log("searchQuery",searchQuery)
     const { userId} = req.user;
+    console.log("userId", userId)
     if (!searchQuery) {
       return res.status(400).json({ msg: "Search query is required" });
     }
@@ -43,7 +51,7 @@ featuresRouter.get("/search", auth, async (req, res) => {
         { content: { $regex: searchQuery, $options: "i" } },
       ],
     });
-    res.status(200).json(notes);
+    notes.length===0? res.status(404).json({message: "Notes Not found"}) :  res.status(200).json(notes);
   } catch (error) {
     res.status(500).json({ msg: "Server error", error });
   }

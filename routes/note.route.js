@@ -37,19 +37,25 @@ const noteRouter = express.Router()
  *                 default: medium
  *              
  *     responses:
- *       200:
+ *       201:
  *         description: Note created successfully.
+ *       400:
+ *         description: resource is unavailable!.
+ *       401:
+ *         description: Please login First!.
+ *       440:
+ *         description: Session is Expired! Login first
  *       500:
  *         description: Internal server error.
  */
 noteRouter.post("/", auth, addPostMiddleware ,async (req,res)=>{
   //
-  const {title, content} = req.body;
+  const {title, content, category="others", priority="medium"} = req.body;
   const { userId, user } = req.user;
   try {
-    const newNote = new NoteModel({ title, content, userId, user});
+    const newNote = new NoteModel({ title, content, category, priority, userId, user});
     await newNote.save();
-    res.status(200).json({msg:"Note created Successfully!"});
+    res.status(201).json({msg:"Note created Successfully!"});
   } catch(error) {
     console.log(error.message)
     res.status(500).json({msg:"Internal server error", error});
@@ -64,11 +70,15 @@ noteRouter.post("/", auth, addPostMiddleware ,async (req,res)=>{
  *     tags: [Notes]
  *     security:
  *       - BearerAuth: []
- *   responses:
- *     200:
- *       description: List of Notes retrieved successfully.
- *     500:
- *       description: Internal server error. 
+ *     responses:
+ *       200:
+ *         description: List of Notes retrieved successfully.
+ *       401:
+ *         description: Please login First!.
+ *       440:
+ *         description: Session is Expired! Login first
+ *       500:
+ *         description: Internal server error. 
  */
 
 noteRouter.get("/",auth, async (req,res)=>{
@@ -100,12 +110,21 @@ noteRouter.get("/",auth, async (req,res)=>{
  *     responses:
  *       200:
  *         description: Note retrieved successfully.
+ *       400:
+ *         description: resource is unavailable!.
+ *       401:
+ *         description: Please Login First
+ *       403:
+ *         description: Unauthorized.
+ *       404:
+ *         description: Note not found.
+ *       440:
+ *         description: Session is Expired! Login first
  *       500:
  *         description: Failed to retrieve note.
  */
 noteRouter.get("/:noteId", auth, isNoteAuthenticated, async (req, res) => {
   try {
-    console.log("route notes to get single note")
     const { noteId} = req.params;
     const userNote = await NoteModel.findById( noteId);
     res.status(200).json(userNote);
@@ -143,9 +162,27 @@ noteRouter.get("/:noteId", auth, isNoteAuthenticated, async (req, res) => {
  *               content:
  *                 type: string
  *                 example: "Updated note content."
+ *               category: 
+ *                 type: string
+ *                 enum: ["work", "personal", "ideas", "shopping list","others"]
+ *                 default: others
+ *               priority: 
+ *                 type: string
+ *                 enum: ["high", "medium", "low"]
+ *                 default: medium
  *     responses:
  *       201:
  *         description: Note updated successfully.
+ *       400:
+ *         description: resource is unavailable!.
+ *       401:
+ *         description: Please login First!.
+ *       403:
+ *         description: Unauthorized.
+ *       404:
+ *         description: Note not found.
+ *       440:
+ *         description: Session is Expired! Login first
  *       500:
  *         description: Internal server error.
  */
@@ -180,6 +217,14 @@ noteRouter.patch("/:noteId",auth, isNoteAuthenticated, async (req,res)=>{
  *     responses:
  *       200:
  *         description: Note deleted successfully.
+ *       401:
+ *         description: Please Login First
+ *       403:
+ *         description: Unauthorized.
+ *       404:
+ *         description: Note not found.
+ *       440:
+ *         description: Session is Expired! Login first
  *       500:
  *         description: Internal server error.
  */

@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.use("/users", userRouter);
 router.use("/notes", noteRouter);
-router.use("/api", featuresRouter);
+router.use("/features", featuresRouter);
 router.use("/token", tokenRouter);
 
 module.exports = router;
