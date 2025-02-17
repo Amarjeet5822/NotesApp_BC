@@ -30,7 +30,7 @@ const options = {
       { name: "Users", description: "User authentication and management" },
       { name: "Notes", description: "CRUD operations for Notes" },
       {
-        name: "Notes Features",
+        name: "Features",
         description: "Advanced features like search, filter, and sort",
       },
     ],

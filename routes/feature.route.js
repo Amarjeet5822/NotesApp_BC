@@ -9,7 +9,7 @@ const featuresRouter = express.Router();
 *   get:
 *     summary: Search notes by title or content
 *     tags:
-*       - Notes Features
+*       - Features
 *     security:
 *       - BearerAuth: []
 *     parameters:
@@ -60,7 +60,7 @@ featuresRouter.get("/search", auth, async (req, res) => {
 *    get:
 *      summary: Filter notes based on priority
 *      tags:
-*        - Notes Features
+*        - Features
 *      security:
 *        - BearerAuth: []
 *      parameters:
@@ -100,7 +100,7 @@ featuresRouter.get("/filter", auth,  async (req, res) => {
 *    get:
 *      summary: Filter notes by category
 *      tags:
-*        - Notes Features
+*        - Features
 *      security:
 *        - BearerAuth: []
 *      parameters:
@@ -141,7 +141,7 @@ featuresRouter.get("/filter-category", auth, async (req, res) => {
 *     get:
 *       summary: Get sorted notes
 *       tags:
-*         - Notes Features
+*         - Features
 *       security:
 *         - BearerAuth: []
 *       parameters:
