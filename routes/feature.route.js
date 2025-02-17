@@ -39,9 +39,7 @@ featuresRouter.get("/search", auth, async (req, res) => {
   try {
     // http:localhost:8080/api/search?q=searchKeyword project
     const searchQuery = req.query.q;
-    console.log("searchQuery",searchQuery)
     const { userId} = req.user;
-    console.log("userId", userId)
     if (!searchQuery) {
       return res.status(400).json({ msg: "Search query is required" });
     }
