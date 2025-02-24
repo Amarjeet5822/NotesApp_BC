@@ -85,7 +85,7 @@ noteRouter.get("/",auth, async (req,res)=>{
     try {
       const {userId } = req.user
       const notes = await NoteModel.find({ userId});
-      res.status(200).json({notes})
+      res.status(200).json(notes)
     } catch(error) {
         res.status(500).json({msg:"Internal server error", error});
     }

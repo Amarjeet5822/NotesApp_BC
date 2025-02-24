@@ -52,19 +52,14 @@ const userRouter = express.Router();
 // User Registration
 userRouter.post("/register", registerMiddleware, async (req, res) => {
   const { name, pass, email } = req.body;
- 
   try {
-    bcrypt.hash(pass, Number(process.env.SALT_ROUNDS), async (err, hash) => {
-      if (err) {
-        return res.status(400).json({ message: err.message }); // ! update  for more specific error
-      } 
-      const newUser = new UserModel({ name, email, pass: hash });
-      await newUser.save();
-      res.status(201).json({ message: "You have been successfully regitered!" });
-      
-    });
+    // throw new Error("Error in try block");
+    const hash = await bcrypt.hash(pass, Number(process.env.SALT_ROUNDS));
+    const newUser = new UserModel({ name, email, pass: hash });
+    await newUser.save();
+    res.status(201).json({ message: "You have been successfully regitered!" });
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500).json(error.message);
   }
 });
 
@@ -165,7 +160,6 @@ userRouter.post("/logout", auth, async (req, res) => {
   try {
     const { userId }  = req.user;
     const refreshToken = req.cookies.refreshToken;
-    console.log("line 65 logout = ", refreshToken)
     if(!refreshToken) {
       return res.status(400).json({ message: "No token provided"})
     }
@@ -211,7 +205,63 @@ userRouter.get("/", auth, async (req, res) => {
     res.status(500).json({message:"Internal Server Error" ,error: error.message})
   }
 });
+/**
+ * @swagger
+ * /users:
+ *   patch:
+ *     summary: Update User
+ *     tags: 
+ *       - Users  
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: 
+ *               - name
+ *               - email
+ *               - pass
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "Amar Gupta"
+ *               email:
+ *                 type: string
+ *                 example: "amargupta@gmail.com"
+ *               pass:
+ *                 type: string
+ *                 example: "password123"
+ *     responses:
+ *       200:
+ *         description: Updated successfully
+ *       404:
+ *         description: User not Found!
+ *       406:
+ *         description: resource is unavailable!
+ *       440:
+ *         description: Session is Expired! (Please login First)
+ *       500:
+ *         description: Internal Server error
+ */
 
+// User Registration
+userRouter.patch("/", auth, async (req, res) => {
+  const { name, pass, email } = req.body;
+ 
+  try {
+    const oldUserDetail = await UserModel.findOne({email})
+    if(!oldUserDetail) {
+      return res.status(404).json({message: "User not Found!"})
+    }
+    // Use await instead of callback
+    const hashedPassword = await bcrypt.hash(pass, Number(process.env.SALT_ROUNDS)); 
+    await UserModel.findByIdAndUpdate({_id:oldUserDetail._id },{ name, email, pass: hashedPassword });
+    res.status(200).json({ message: "Updated successfully" });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+});
 /**
  * @swagger
  * /users:

@@ -16,7 +16,7 @@ const registerMiddleware = async (req, res, next) => {
       next();
     }
   } catch (error) {
-    return res.status(500).json({message:"internal Server error", error: error.message });
+      res.status(500).json({message:"internal Server error", error: error.message });
   }
 };
 

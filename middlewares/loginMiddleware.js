@@ -15,7 +15,8 @@ const loginMiddleware = async (req, res, next) => {
   if(!email || !pass){
     return res.status(400).json({message:"Invalid Credentail"})
   }
-  if(!/\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(email)){
+  let regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if(!regex.test(email)){
     return res.status(400).json({message:"Invalid email! Please enter correct valid email"})
   }
   const user =await UserModel.findOne({email});
