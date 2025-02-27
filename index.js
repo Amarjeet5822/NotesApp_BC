@@ -15,11 +15,17 @@ const cookieParserSecret = process.env.SECRET_KEY;
 app.use(cookieParser(cookieParserSecret));
 
 app.use(cors({
-  origin: [process.env.FE_URL, process.env.DEPLOY_FE_URL],
-  credentials: true, // 
-  methods: ["GET" ,"PATCH","POST", "DELETE"],
-  allowedHeaders:["Content-Type", "Authorization"],
-
+  origin: (origin, callback) => {
+    const allowedOrigins = [process.env.FE_URL, process.env.DEPLOY_FE_URL];
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true); // Allow requests from valid origins or Postman (no origin)
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "HEAD", "PATCH", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
 }));
 
 app.use(router);

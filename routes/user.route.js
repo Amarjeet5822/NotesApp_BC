@@ -116,7 +116,7 @@ userRouter.post("/login", loginMiddleware, async (req, res) => {
         httpOnly: true,  // Prevents XSS attacks
         secure: process.env.NODE_ENV === "production", // `false` in development, `true` in production
         sameSite: process.env.NODE_ENV === "production" ? "none" : "Lax", // `Strict` can block requests in some cases, `Lax` is better for authentication
-        maxAge: 90 * 60 * 60 * 1000, // Fifteen minutes
+        maxAge: 7 * 24 * 60 * 60 * 1000, // Seven Days
       });
       res.status(200).json({ message: "Login Successfull!",refreshToken, matchingUser });
     } else {
@@ -168,7 +168,7 @@ userRouter.post("/logout", auth, async (req, res) => {
     
     res.clearCookie("refreshToken", {
       httpOnly: true,
-      secure: false,   // ✅ Change to false for localhost testing
+      secure: true,   // ✅ Change to false for localhost testing
       sameSite: "Lax", // ✅ Change to "Lax" for cross-site requests
     });
     res.status(200).json({message: "logout Successful!"})
