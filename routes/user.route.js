@@ -245,7 +245,7 @@ userRouter.get("/", auth, async (req, res) => {
  *         description: Internal Server error
  */
 
-// User Registration
+// User Update
 userRouter.patch("/", auth, async (req, res) => {
   const { name, pass, email } = req.body;
  

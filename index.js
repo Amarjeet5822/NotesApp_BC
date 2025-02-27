@@ -5,7 +5,6 @@ require("dotenv").config();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const router = require("./routes/index.route");
-
 const app = express();
 
 app.use(express.json()); // req.body parse json
@@ -26,6 +25,7 @@ app.use(cors({
 app.use(router);
 
 swaggerDocs(app); // Load Swagger for Documentation
+
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
