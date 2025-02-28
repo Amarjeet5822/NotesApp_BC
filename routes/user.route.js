@@ -288,7 +288,7 @@ userRouter.delete("/", auth, async (req, res) => {
     await UserModel.findByIdAndDelete({ _id: userId });
     res.clearCookie("refreshToken", {
       httpOnly: true,
-      secure: false,   // ✅ Change to false for localhost testing
+      secure: true,   // ✅ Change to false for localhost testing
       sameSite: "Lax", // ✅ Change to "Lax" for cross-site requests
     });
     res.status(200).json({message:"user deleted Successfully"});
