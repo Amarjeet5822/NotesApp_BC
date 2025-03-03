@@ -168,8 +168,8 @@ userRouter.post("/logout", auth, async (req, res) => {
     
     res.clearCookie("refreshToken", {
       httpOnly: true,
-      secure: true,   // ✅ Change to false for localhost testing
-      sameSite: "Lax", // ✅ Change to "Lax" for cross-site requests
+      secure: process.env.NODE_ENV === "production", // `false`
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "Lax", // `Strict` can block requests in some cases, `Lax` is better for authentication
     });
     res.status(200).json({message: "logout Successful!"})
   } catch (error) {
@@ -288,8 +288,8 @@ userRouter.delete("/", auth, async (req, res) => {
     await UserModel.findByIdAndDelete({ _id: userId });
     res.clearCookie("refreshToken", {
       httpOnly: true,
-      secure: true,   // ✅ Change to false for localhost testing
-      sameSite: "Lax", // ✅ Change to "Lax" for cross-site requests
+      secure: process.env.NODE_ENV === "production", // `false`
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "Lax", // `Strict` can block requests in some cases, `Lax` is better for authentication
     });
     res.status(200).json({message:"user deleted Successfully"});
   }catch(error) {

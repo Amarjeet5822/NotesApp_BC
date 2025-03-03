@@ -2,3 +2,7 @@ SALT_ROUNDS=
 MONGO_URL=
 PORT=
 SECRET_KEY=
+FE_URL=http://localhost:5173
+DEPLOY_FE_URL=
+BE_URL= at the time of swager implementation
+NODE_ENV=
