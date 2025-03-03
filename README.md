@@ -1,5 +1,6 @@
 # 📝 Note-Taking Application
 
+![alt text](<Screenshot 2025-02-27 144539.png>)
 This is a **full-stack Note-Taking Application** built with **Node.js, Express, and MongoDB**. It allows users to **register, login, and manage their notes** with categories, priorities, and search functionalities.
 
 ## 🚀 Features
